@@ -37,3 +37,6 @@ CONTEXT_NAME=$(kubectl config view -o jsonpath='{.contexts[].name}')
 ```
 argocd cluster add $CONTEXT_NAME
 ```
+```
+argocd app create myapp --repo https://github.com/kishore-vhs/argocd_kops.git --path deploy  --dest-server https://api.hskglobaltech.shop --dest-namespace default
+```

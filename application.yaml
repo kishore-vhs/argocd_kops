@@ -1,6 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: rollingupdate
+  namespace: argocd
+spec:
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: true
+  project: default
+  source:
+    repoURL: git@github.com:kishore-vhs/argocd_kops.git
+    targetRevision: HEAD
+    path: deploy
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: votingapp
   namespace: argocd
 spec:
@@ -11,32 +32,13 @@ spec:
       allowEmpty: true
   project: default
   source:
-    repoURL:
+    repoURL: git@github.com:kishore-vhs/argocd_kops.git
     targetRevision: HEAD
-    path: deploy
+    path: votingapp
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: Updates
-  namespace: argocd
-spec:
-  syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
-      allowEmpty: true
-  project: default
-  source:
-    repoURL:
-    targetVersion: HEAD
-    path: votigapp
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
+    namespace: votingapp
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -51,9 +53,11 @@ spec:
       allowEmpty: true
   project: default
   source:
-    repoURL:
+    repoURL: git@github.com:kishore-vhs/argocd_kops.git
     targetRevision: HEAD
     path: ArgoApps
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx
+
+#The above manifest can be deployed using echo '' | ku apply -f -
